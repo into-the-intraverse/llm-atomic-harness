@@ -16,5 +16,18 @@ t2="$(mktemp -d)"; git -C "$t2" init -q
 ( cd "$t2" && CLAUDE_PROJECT_DIR="$t2" bash "$LINT" >/dev/null 2>&1 )
 if [ ! -f "$t2/lint-report.md" ]; then echo "PASS case2"; else echo "FAIL case2"; fail=1; fi
 
-rm -rf "$t1" "$t2"
+# Case 3: image embeds -> missing targets flagged (atoms + wiki), existing ones pass.
+t3="$(mktemp -d)"; git -C "$t3" init -q
+mkdir -p "$t3/wiki/mcp" "$t3/atoms/mcp" "$t3/raw/src/images"
+printf 'x' > "$t3/raw/src/images/good.jpg"
+printf '# Auth\n\n![ok](../../raw/src/images/good.jpg)\n' > "$t3/wiki/mcp/auth.md"
+printf -- '---\nid: mcp/a\nversion: 1\n---\n\n![gone](../../raw/src/images/missing.jpg)\n' > "$t3/atoms/mcp/a.md"
+( cd "$t3" && CLAUDE_PROJECT_DIR="$t3" bash "$LINT" >/dev/null 2>&1 )
+if grep -q 'missing.jpg' "$t3/lint-report.md" && ! grep -q 'good.jpg' "$t3/lint-report.md"; then
+  echo "PASS case3"
+else
+  echo "FAIL case3"; fail=1
+fi
+
+rm -rf "$t1" "$t2" "$t3"
 exit $fail

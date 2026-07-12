@@ -1,6 +1,6 @@
 #!/bin/bash
 # Wiki Lint — Programmatic Layer
-# Checks: ghost links, orphan pages, format violations, outdated markers.
+# Checks: ghost links, orphan pages, format violations, outdated markers, ghost image embeds.
 # Output: lint-report.md at repo root.
 
 ROOT="$(git -C "${CLAUDE_PROJECT_DIR:-$PWD}" rev-parse --show-toplevel 2>/dev/null)" || exit 0
@@ -141,6 +141,37 @@ for slug in "${!SLUGS[@]}"; do
 done
 
 if [ $FOUND_OUTDATED -eq 0 ]; then
+  echo "None." >> "$REPORT"
+fi
+echo "" >> "$REPORT"
+
+# ─── 5. Ghost Image Embeds ───
+# Every ![...](path) in atoms/ and wiki/ must resolve to an existing file
+# relative to the markdown file's directory. External URLs are not checked.
+echo "## 5. Ghost Image Embeds (image paths that do not resolve)" >> "$REPORT"
+echo "" >> "$REPORT"
+FOUND_GHOST_IMG=0
+
+while IFS= read -r f; do
+  case "$(basename "$f")" in
+    _template.md|README.md) continue ;;
+  esac
+  dir="$(dirname "$f")"
+  rel="${f#$ROOT/}"
+  while IFS= read -r path; do
+    path="${path%% *}"   # drop optional markdown title after the path
+    case "$path" in
+      http://*|https://*|data:*) continue ;;
+    esac
+    if [ ! -f "$dir/$path" ]; then
+      echo "- \`$rel\` → \`$path\` (missing)" >> "$REPORT"
+      FOUND_GHOST_IMG=1
+      ((ERRORS++))
+    fi
+  done < <(grep -o '!\[[^]]*\]([^)]*)' "$f" 2>/dev/null | sed 's/^!\[[^]]*\](//;s/)$//')
+done < <(find "$ROOT/atoms" "$WIKI_DIR" -type f -name '*.md' 2>/dev/null)
+
+if [ $FOUND_GHOST_IMG -eq 0 ]; then
   echo "None." >> "$REPORT"
 fi
 echo "" >> "$REPORT"

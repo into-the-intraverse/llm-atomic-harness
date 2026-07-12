@@ -34,7 +34,7 @@ Wiki is rebuildable from atoms. If a wiki page is wrong, fix the underlying atom
 id: <branch>/<descriptive-slug>
 type: explanation | opinion | tutorial | myth-busting | case-study | comparison
 depth: beginner | intermediate | advanced
-source_type: post | reply | thread | transcript | article | note | screenshot | audio
+source_type: post | reply | thread | transcript | article | note | screenshot | audio | video
 source_ids: []
 reuse_score: high | medium | low
 tags: []
@@ -69,6 +69,9 @@ Pattern: `<descriptive-slug>.md`
 
 - One core claim per atom. If two independent claims share a paragraph, split into two atoms.
 - Refine, don't copy. Strip filler from the source; preserve the author's voice and stance.
+- An image that anchors the claim (chart, diagram, slide, code screenshot) is embedded in the
+  body with standard markdown: `![alt](../../raw/<path>)`. Reference `raw/` — never copy the
+  file into `atoms/`. "Read-only" forbids writing into `raw/`, not linking to it.
 - Cite source at the end if you want traceability beyond `source_ids`.
 
 ### Lifecycle (mutable, versioned)
@@ -110,6 +113,13 @@ Pattern: `[[<branch>/<slug>]]` or `[[<branch>/<slug>|display text]]`
 
 - The path inside `[[ ]]` must equal an existing wiki page (relative to `wiki/`, without `.md`).
 - Always include the branch — there is no short form. Lint flags ghost links and orphan pages.
+
+### Image embeds
+
+Standard markdown images only: `![alt](../../raw/<path>)`. Atoms and wiki pages sit at the same
+depth (two levels below the repo root), so an embed copied from an atom works verbatim in the
+page. Lint flags embeds whose target file does not exist. Do not use `![[ ]]` embeds — they
+don't render outside Obsidian.
 
 ### Body structure
 
@@ -238,6 +248,9 @@ Three options for `source_ids`:
 # URL-based (public content)
 source_ids: ["https://example.com/post/12345"]
 
+# Video sources — deep-link the moment when the source is timestamped
+source_ids: ["https://www.youtube.com/watch?v=abc123&t=252"]
+
 # File-based (private materials)
 source_ids: ["lectures/skill-design.md"]
 
@@ -255,7 +268,8 @@ Use hash IDs when you need to detect that a source was modified after extraction
 - **Create a new atom for an evolved view.** Edit the existing atom and bump the version. Git keeps the prior text. Don't reintroduce `_archive/` or `superseded_by`.
 - **Add `created:` or `updated:` to frontmatter.** Git and Obsidian Dataview both have these — frontmatter dates drift.
 - **Date-prefix atom filenames.** Same reason. `slug.md`, not `YYYY-MM-DD-slug.md`.
-- **Write to `raw/`.** It is read-only from your perspective.
+- **Write to `raw/`.** It is read-only from your perspective. (Linking to `raw/` files from atoms and wiki pages is fine — that is how images are used.)
+- **Copy images out of `raw/`.** Atoms and wiki pages embed them by reference (`../../raw/...`); the file has one committed home.
 - **Invent branches without user approval.** Branch design has independence/scale/boundary criteria.
 - **Prefix wiki slugs with the branch name.** The branch is the folder; the slug is what's inside it. `wiki/mcp/auth.md`, not `wiki/mcp/mcp-auth.md`.
 - **Use bold/italic to compensate for unclear writing.** If a sentence needs emphasis to be understood, rewrite the sentence.

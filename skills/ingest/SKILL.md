@@ -34,13 +34,27 @@ Read raw material from `raw/` (or any path the user names), classify each segmen
 id: <branch>/<descriptive-slug>
 type: explanation | opinion | tutorial | myth-busting | case-study | comparison
 depth: beginner | intermediate | advanced
-source_type: post | reply | thread | transcript | article | note | screenshot | audio
+source_type: post | reply | thread | transcript | article | note | screenshot | audio | video
 source_ids: ["<stable-id-or-url>"]
 reuse_score: high | medium | low
 tags: []
 version: 1
 ---
 ```
+
+## Images in sources
+
+Sources may carry images — keyframes woven into a video transcript, screenshots beside a note.
+An image belongs to the segment it appears in:
+
+- If the image anchors the segment's claim (a chart, diagram, slide, table, code screenshot),
+  the atom **embeds it**: `![<alt>](../../raw/<path-to-image>)`. Atoms live two levels below the
+  repo root, so the prefix is always `../../raw/`. Reference the file where it lives — `raw/`
+  being read-only means you never *write* there; linking to it is the intended use.
+- If the text stands alone without the image, leave the image out.
+- For video sources, anchor `source_ids` to the moment: append the segment's timestamp to the
+  URL, e.g. `["https://www.youtube.com/watch?v=ID&t=252"]` for a claim made at 04:12. Write the
+  URL byte-for-byte with a plain `&` — never HTML-escape it to `&amp;`.
 
 ## Filename
 
@@ -52,6 +66,8 @@ version: 1
 - Use the frontmatter format above. Do not invent fields.
 - Preserve the author's voice. Personal knowledge base, not neutral encyclopedia.
 - Tag sources via `source_ids` — atoms without source attribution are not auditable.
+- An image that anchors a claim travels with its atom as a `../../raw/` embed — never copied,
+  never moved.
 - If a passage doesn't pass the "extract" bar (pure action items, unannotated news restatement, time-sensitive ephemera, pure emotion), skip it.
 
 ## After ingest
