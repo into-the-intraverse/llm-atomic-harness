@@ -1,6 +1,6 @@
 ---
 name: factcheck
-description: Use when the user runs /atomic-wiki:factcheck, asks to verify atoms they wrote («проверь мои атомы», "did I get this right?"), hands over a source (article, video, link) to check their atoms against, or when freshly extracted atoms need checking before commit.
+description: Use when the user runs /atomic-wiki:factcheck, asks to verify atoms they wrote ("check my atoms", "did I get this right?"), hands over a source (article, video, link) to check their atoms against, or when freshly extracted atoms need checking before commit.
 ---
 
 # Factcheck
@@ -35,7 +35,7 @@ Atoms to check (explicit paths, a branch, or "everything uncommitted" via `git s
 ## Report template (all fields required, per atom)
 
 ```markdown
-### <branch>/<slug> — ✅ подтверждено | ⚠️ неточно | ❌ неверно | ❓ не смог проверить
+### <branch>/<slug> — ✅ correct | ⚠️ imprecise | ❌ wrong | ❓ could not verify
 - **Claim:** <the atom's core claim, one line>
 - **Checked:** <source found and read, or the searches that came up empty>
 - **References → source_ids:** <exact IDs added to the atom> | none found — stays unattributed
