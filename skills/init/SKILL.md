@@ -43,7 +43,7 @@ bash "${CLAUDE_PLUGIN_ROOT}/scripts/install-versionbump-hook.sh"
 
 Ask the user before editing their `CLAUDE.md`. If they agree, append:
 
-> This repo uses the **atomic-wiki** plugin. Operate it with `/atomic-wiki:ingest`, `/atomic-wiki:compile`, `/atomic-wiki:lint`, `/atomic-wiki:query`. The pipeline spec is the plugin's `reference/SCHEMA.md`.
+> This repo uses the **atomic-wiki** plugin. Operate it with `/atomic-wiki:ingest`, `/atomic-wiki:factcheck`, `/atomic-wiki:compile`, `/atomic-wiki:lint`, `/atomic-wiki:query`. The pipeline spec is the plugin's `reference/SCHEMA.md`.
 
 ## After running
 

@@ -201,11 +201,12 @@ When adding/merging/splitting:
 
 ## Operations
 
-The four operations are skills provided by the **atomic-wiki** plugin, invoked as `/atomic-wiki:<name>`. Use `/atomic-wiki:init` to scaffold a new project. Each skill spells out the constraints and the script it runs:
+The five operations are skills provided by the **atomic-wiki** plugin, invoked as `/atomic-wiki:<name>`. Use `/atomic-wiki:init` to scaffold a new project. Each skill spells out the constraints and the script it runs:
 
 | Skill | Trigger | Purpose |
 |---|---|---|
 | `/atomic-wiki:ingest` | new material in `raw/` | classify segments, extract atoms into the matching branch |
+| `/atomic-wiki:factcheck` | user-written or freshly extracted atoms, before commit | verify claims against sources, attach found references, propose corrections |
 | `/atomic-wiki:compile` | new or changed atoms | group atoms into a wiki page (typical = 3–8 atoms per page) |
 | `/atomic-wiki:lint` | periodic or pre-commit | programmatic check + LLM semantic check |
 | `/atomic-wiki:query` | answering a question | read `index.md`, load relevant pages, answer |

@@ -13,6 +13,8 @@ Read raw material from `raw/` (or any path the user names), classify each segmen
 - User drops new material into `raw/` and asks you to process it.
 - During the lifecycle of any operation that produces new knowledge worth retaining (e.g., a Query that surfaces a synthesis the user wants captured).
 
+Not for checking atoms the user already wrote about a source — that is `/atomic-wiki:factcheck` with the source as input. Do not re-extract what the user has written themselves.
+
 ## Procedure
 
 1. **Read the source.** Treat `raw/` as read-only. Never write back into it.
@@ -73,8 +75,9 @@ An image belongs to the segment it appears in:
 ## After ingest
 
 - Surface to the user: how many atoms extracted, which branches received them, any deferred candidates, any segments that didn't fit existing branches.
-- The user decides whether deferred candidates get extracted later or whether new branches should be approved.
-- Commit when the user is satisfied. The pre-commit hook will enforce `version: 1` on new atoms.
+- Run the `/atomic-wiki:factcheck` pass over the freshly extracted atoms (verify claims, attach references) and present its per-atom report alongside the atom list.
+- The user reviews: they decide corrections, deferred candidates, and any new-branch approvals.
+- Commit only after the user approves the batch. The pre-commit hook will enforce `version: 1` on new atoms.
 
 ## Branch-design criteria
 

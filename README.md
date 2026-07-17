@@ -29,11 +29,12 @@ Run once in the target repository:
 
 This scaffolds `atoms/`, `wiki/`, `raw/`, copies the atom and wiki templates, writes `.gitignore` entries for the generated files (`index.md`, `lint-report.md`), and installs the version-bump pre-commit hook (see below).
 
-After that, the four pipeline skills are available in any Claude Code session opened in that repo:
+After that, the five pipeline skills are available in any Claude Code session opened in that repo:
 
 | Skill | What it does |
 |---|---|
 | `/atomic-wiki:ingest` | Classify segments of a raw source and extract atoms into the matching branch |
+| `/atomic-wiki:factcheck` | Verify atoms' claims against sources, attach found references, propose corrections for factual errors |
 | `/atomic-wiki:compile` | Group atoms from a branch into a coherent wiki page |
 | `/atomic-wiki:lint` | Programmatic checks + LLM semantic review of atoms and wiki pages |
 | `/atomic-wiki:query` | Read `index.md`, load relevant pages, answer a question from the wiki |

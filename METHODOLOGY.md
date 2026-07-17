@@ -36,7 +36,7 @@ Three deliberate simplifications, all leaning on git or the filesystem instead o
 
 - **No date prefix in filenames.** Git tracks creation date better than a frozen prefix that drifts on rename (`git log --diff-filter=A --follow -- <file>`).
 - **No `created:` / `updated:` frontmatter.** Obsidian Dataview can query `file.ctime` / `file.mtime` directly; git is authoritative for history. Frontmatter dates always drift.
-- **Operations are provided by the atomic-wiki plugin as skills.** `/atomic-wiki:ingest`, `/atomic-wiki:compile`, `/atomic-wiki:lint`, `/atomic-wiki:query` are plugin skills; `gen-index.sh` and `lint.sh` run automatically via the plugin's hooks. The shell scripts remain the canonical implementation — skills/hooks are thin orchestration.
+- **Operations are provided by the atomic-wiki plugin as skills.** `/atomic-wiki:ingest`, `/atomic-wiki:factcheck`, `/atomic-wiki:compile`, `/atomic-wiki:lint`, `/atomic-wiki:query` are plugin skills; `gen-index.sh` and `lint.sh` run automatically via the plugin's hooks. The shell scripts remain the canonical implementation — skills/hooks are thin orchestration.
 
 The `version:` integer and its pre-commit hook stay. The hook compares the staged file against `HEAD` ignoring whitespace and flips you off if the body changed without `version:` being bumped — this catches intent, not just diff. Git can't tell "I revised this view" from "I fixed a typo" on its own.
 
@@ -316,13 +316,14 @@ Git is the change log. Every Ingest, edit, or compile lands as a commit. There i
 
 ---
 
-## Continuous maintenance: the four operations
+## Continuous maintenance: the five operations
 
-Wiki isn't done after the first build. Four continuous operations, each provided by the atomic-wiki plugin as a skill:
+Wiki isn't done after the first build. Five continuous operations, each provided by the atomic-wiki plugin as a skill:
 
 | Skill | Trigger | What it does |
 |---|---|---|
 | `/atomic-wiki:ingest` | new material in `raw/` | Read it, classify segments, extract atoms into the matching branch. |
+| `/atomic-wiki:factcheck` | user-written or freshly extracted atoms, before commit | Verify each atom's claims: confirm cited research/authors actually say what the atom says, attach found reference URLs to `source_ids`, propose corrections for factual errors. Against a specific source when one is given. |
 | `/atomic-wiki:compile` | new or changed atoms | Group atoms into a wiki page (or update one). Parallel-compile uses a slug-lock to avoid filename collisions. |
 | `/atomic-wiki:lint` | periodic, or after large changes | Programmatic check (`lint.sh`) for ghost links, orphans, format violations; LLM check for contradictions, concept gaps, expired claims, weak orphans. Appends findings to `lint-report.md`. |
 | `/atomic-wiki:query` | answering a question | Read `index.md`, load relevant pages only, answer. Optionally write back the synthesis as a new atom or version bump. |
