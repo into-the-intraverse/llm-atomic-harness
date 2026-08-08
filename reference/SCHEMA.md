@@ -68,11 +68,21 @@ Pattern: `<descriptive-slug>.md`
 ### Body
 
 - One core claim per atom. If two independent claims share a paragraph, split into two atoms.
+- The first line states the claim. Everything after it earns its place — mechanism, evidence,
+  numbers, caveats, an example, the opposing case. A body that re-announces the claim before
+  adding anything is deleted; if that leaves no body, the first line is the atom. A one-paragraph
+  atom is a finished atom.
 - Refine, don't copy. Strip filler from the source; preserve the author's voice and stance.
 - An image that anchors the claim (chart, diagram, slide, code screenshot) is embedded in the
   body with standard markdown: `![alt](../../raw/<path>)`. Reference `raw/` — never copy the
   file into `atoms/`. "Read-only" forbids writing into `raw/`, not linking to it.
-- Cite source at the end if you want traceability beyond `source_ids`.
+- Cite source at the end if you want traceability beyond `source_ids`. The quote must carry what
+  `source_ids` cannot — a memorable phrasing, an attribution, a figure. A quote that paraphrases
+  the first line is a third copy of the claim.
+- One claim, one atom, however many sources. A new source that makes a claim the wiki already
+  holds is appended to that atom's `source_ids` (bump `version`), not written as a twin. A source
+  that *contradicts* an existing atom gets its own atom — a contradiction is two claims — with
+  each body naming the other's `id` and both sharing a tag.
 
 ### Lifecycle (mutable, versioned)
 
@@ -267,6 +277,7 @@ Use hash IDs when you need to detect that a source was modified after extraction
 
 - **Edit an atom's body without bumping `version:`.** The pre-commit hook will reject the commit. If the only change is whitespace/formatting, the hook lets it through unchanged.
 - **Create a new atom for an evolved view.** Edit the existing atom and bump the version. Git keeps the prior text. Don't reintroduce `_archive/` or `superseded_by`.
+- **Write a second atom for a claim an existing atom already makes.** Append the new source to that atom's `source_ids` instead — cross-source confirmation is the point.
 - **Add `created:` or `updated:` to frontmatter.** Git and Obsidian Dataview both have these — frontmatter dates drift.
 - **Date-prefix atom filenames.** Same reason. `slug.md`, not `YYYY-MM-DD-slug.md`.
 - **Write to `raw/`.** It is read-only from your perspective. (Linking to `raw/` files from atoms and wiki pages is fine — that is how images are used.)
